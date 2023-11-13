@@ -1,8 +1,11 @@
 name: v2fly geosite conversion
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 1 * * *'
+    
+env:
+  TZ: "Asia/Tokyo"
+
 jobs:
   conversion:
     name: Build
