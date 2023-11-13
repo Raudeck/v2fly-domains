@@ -1,0 +1,57 @@
+name: v2fly geosite conversion
+on:
+  push:
+    branches:
+      - main
+jobs:
+  conversion:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set environment variable
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        shell: bash
+      
+      - name: Install dependencies
+        run: |
+          sudo apt update && sudo apt install -y protobuf-compiler
+
+      - name: Install rust toolchains
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install golang
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: geosite_converter/libs/go.mod
+      
+      - name: Fetch dlc.dat from v2fly/domain-list-community
+        run: curl -L -o dlc.dat 'https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat'
+      
+      - name: Start conversion
+        run: cargo run
+      
+      - name: Release clash ruleset
+        run: |
+          cd ruleset
+          git init 
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b ruleset
+          git add *.yaml
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin ruleset
+        
+      - name: Release sing-box geosite.db
+        run: |
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.db
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    
