@@ -96,13 +96,13 @@ fn main() -> Result<(), std::io::Error> {
         for sites in i.domain.iter() {
             match sites.r#type.try_into().unwrap() {
                 Type::Full => {
-                    writeln!(file, "    -DOMAIN-SUFFIX,{}", sites.value).unwrap();
+                    writeln!(file, "    \'{}\'", sites.value).unwrap();
                 }
                 Type::Domain => {
-                    writeln!(file, "    -DOMAIN,{}", sites.value).unwrap();
+                    writeln!(file, "    \'+.{}\'", sites.value).unwrap();
                 }
                 Type::Plain => {
-                    writeln!(file, "    -DOMAIN-KEYWORD, {}", sites.value).unwrap();
+                    writeln!(file, "    \'+.{}\'", sites.value).unwrap();
                 }
                 Type::Regex => {}
             }
