@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 proto_parser = { path = "proto_parser" }
 geosite_converter = { path = "geosite_converter" }
+fancy-regex = "0.12.0"

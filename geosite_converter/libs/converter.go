@@ -16,8 +16,8 @@ func v2site_to_sing() {
 		buffer   bytes.Buffer
 		filename = "geosite.db"
 	)
-	fmt.Println("➕Loading file: dlc.dat",)
-	fileContent, err := os.ReadFile("./dlc.dat")
+	fmt.Println("➕Loading file: geosite.dat",)
+	fileContent, err := os.ReadFile("./geosite.dat")
 	if err != nil {
 		panic(err)
 	}
