@@ -4,9 +4,11 @@ use std::{fs::File, io::{Read, Write}};
 use proto_parser::proto_parser::common::{GeoSite, Domain};
 use proto_parser::{load_site, geosite_serialization};
 use proto_parser::proto_parser::common::domain::{Type, Attribute};
-use geosite_converter::v2site_to_sing;
+use geosite_converter::{v2site_to_sing, generate};
 use fancy_regex::Regex;
+use std::ffi::CString;
 
+#[allow(non_snake_case)]
 fn main() -> Result<(), std::io::Error> {
     let mut v2fly_dlc = File::open("dlc.dat")?;
     let mut v2fly_domain = Vec::<u8>::new();
@@ -96,13 +98,13 @@ fn main() -> Result<(), std::io::Error> {
         for sites in i.domain.iter() {
             match sites.r#type.try_into().unwrap() {
                 Type::Full => {
-                    writeln!(file, "    \'{}\'", sites.value).unwrap();
+                    writeln!(file, "    - \'{}\'", sites.value).unwrap();
                 }
                 Type::Domain => {
-                    writeln!(file, "    \'+.{}\'", sites.value).unwrap();
+                    writeln!(file, "    - \'+.{}\'", sites.value).unwrap();
                 }
                 Type::Plain => {
-                    writeln!(file, "    \'+.{}\'", sites.value).unwrap();
+                    writeln!(file, "    - \'+.{}\'", sites.value).unwrap();
                 }
                 Type::Regex => {}
             }
@@ -122,6 +124,10 @@ fn main() -> Result<(), std::io::Error> {
     file.write(&geosite_serialization(&sites))?;
 
     unsafe {v2site_to_sing();}
-
+    let geositeInputFile = CString::new("geosite.dat").unwrap();
+    let ruleSetOutputDir = CString::new("sing-box_ruleset").unwrap();
+    unsafe {
+        generate(geositeInputFile.as_ptr(), ruleSetOutputDir.as_ptr());
+    }
     Ok(())
 }

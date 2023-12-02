@@ -58,6 +58,18 @@ jobs:
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin ruleset
+      
+      - name: Release sing-box ruleset
+        run: |
+          cd sing-box_ruleset
+          git init 
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b sing_ruleset
+          git add *.srs
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin sing_ruleset
         
       - name: Release sing-box geosite.db
         run: |
