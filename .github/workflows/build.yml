@@ -73,7 +73,7 @@ jobs:
         
       - name: Release sing-box geosite.db
         run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.db
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.db ./geosite.dat
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
