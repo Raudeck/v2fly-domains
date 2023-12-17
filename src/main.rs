@@ -104,7 +104,22 @@ fn main() -> Result<(), std::io::Error> {
                     writeln!(file, "    - \'+.{}\'", sites.value).unwrap();
                 }
                 Type::Plain => {
-                    writeln!(file, "    - \'+.{}\'", sites.value).unwrap();
+                    if !std::path::Path::new(format!("ruleset/{}-classical.yaml", i.country_code.to_lowercase()).as_str()).exists() {
+                        let mut file = std::fs::OpenOptions::new()
+                            .create_new(true)
+                            .write(true)
+                            .append(true)
+                            .open(format!("ruleset/{}-classical.yaml", i.country_code.to_lowercase().as_str())).unwrap();
+                        writeln!(file, "payload:").unwrap();
+                        writeln!(file, "    - DOMAIN-KEYWORD, {}", sites.value).unwrap();
+                    } else {
+                        let mut file = std::fs::OpenOptions::new()
+                            .create_new(false)
+                            .write(true)
+                            .append(true)
+                            .open(format!("ruleset/{}-classical.yaml", i.country_code.to_lowercase().as_str())).unwrap();
+                        writeln!(file, "    - DOMAIN-KEYWORD, {}", sites.value).unwrap();
+                    }
                 }
                 Type::Regex => {}
             }

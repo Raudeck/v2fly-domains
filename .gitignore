@@ -1,3 +1,6 @@
 /target
 ruleset/
 resources/
+*.dat
+*.db
+sing-box_ruleset/
