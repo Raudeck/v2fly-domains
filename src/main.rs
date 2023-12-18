@@ -93,15 +93,14 @@ fn main() -> Result<(), std::io::Error> {
             .create_new(true)
             .write(true)
             .append(true)
-            .open(format!("ruleset/{}.yaml", i.country_code.to_lowercase()).as_str()).unwrap();
-        writeln!(file, "payload:").unwrap();
+            .open(format!("ruleset/{}.list", i.country_code.to_lowercase()).as_str()).unwrap();
         for sites in i.domain.iter() {
             match sites.r#type.try_into().unwrap() {
                 Type::Full => {
-                    writeln!(file, "    - \'{}\'", sites.value).unwrap();
+                    writeln!(file, "{}", sites.value).unwrap();
                 }
                 Type::Domain => {
-                    writeln!(file, "    - \'+.{}\'", sites.value).unwrap();
+                    writeln!(file, ".{}", sites.value).unwrap();
                 }
                 Type::Plain => {
                     if !std::path::Path::new(format!("ruleset/{}-classical.yaml", i.country_code.to_lowercase()).as_str()).exists() {
