@@ -44,6 +44,27 @@ jobs:
           curl -L -o 'resources/ad.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list'
           curl -L -o 'resources/hoyoverse.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HoYoverse/HoYoverse.list'
           curl -L -o 'resources/google.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list'
+      
+      - name: Add extra domains
+        run: |
+          sed -i -e '$aDOMAIN-SUFFIX,effirst.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,imtmp.net' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,id6.me' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,gx966888.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,gxeszx.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,bestcood.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,haier-ioc.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,mmstat.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,tastien.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,jhcampus.net' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,kvcoogo.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,aliapp.org' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,tanx.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,snssdk.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,alimama.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,jpush.io' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,umeng.com' resources/cn.list
+          sed -i -e '$aDOMAIN-SUFFIX,v1kf.com' resources/cn.list
       - name: Start conversion
         run: cargo run
       
