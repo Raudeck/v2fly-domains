@@ -8,7 +8,7 @@ require (
 	github.com/metacubex/geo v0.0.0-20231112084452-b35f165b0503
 	github.com/sagernet/sing v0.2.18-0.20231129075305-eb56a60214be
 	github.com/v2fly/v2ray-core/v5 v5.12.1
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
