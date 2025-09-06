@@ -6,5 +6,6 @@ Based on [v2fly/domain-list-community](https://github.com/v2fly/domain-list-comm
 Since I'm not familiar with Go, partial code written in Go is based on [MetaCubeX/geo](https://github.com/MetaCubeX/geo) and implement a FFI for calling from Rust.
 
 # Download
- * https://github.com/Raudeck/v2fly-domains/releases/latest/download/geosite.db
+ * For Xray/V2ray: https://github.com/Raudeck/v2fly-domains/releases/latest/download/geisite.dat
+ * For sing-box: https://github.com/Raudeck/v2fly-domains/releases/latest/download/geisite.db
  * Clash rulesets are within the branch ruleset.

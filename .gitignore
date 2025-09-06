@@ -4,3 +4,6 @@ resources/
 *.dat
 *.db
 sing-box_ruleset/
+.*
+!.github
+!.gitignore

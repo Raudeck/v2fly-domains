@@ -7,5 +7,10 @@ edition = "2021"
 
 [dependencies]
 proto_parser = { path = "proto_parser" }
-geosite_converter = { path = "geosite_converter" }
+# geosite_converter = { path = "geosite_converter" }
 fancy-regex = "0.12.0"
+clap = { version = "4.5.47", features = ["cargo"] }
+env_logger = "0.11.8"
+log = "0.4.28"
+converter = { path = "converter" }
+rayon = "1.11.0"
