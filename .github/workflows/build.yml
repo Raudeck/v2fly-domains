@@ -40,7 +40,7 @@ jobs:
       - name: Download ruleset
         run: |
           mkdir -p resources
-          curl -L -o 'resources/cn.list' 'https://github.com/Loyalsoldier/surge-rules/blob/release/ruleset/direct.txt'
+          curl -L -o 'resources/cn.list' 'https://github.com/Loyalsoldier/surge-rules/raw/refs/heads/release/ruleset/direct.txt'
       
       - name: Add extra domains
         run: |
@@ -81,7 +81,7 @@ jobs:
           git init 
           git config --local user.name github-actions[bot]
           git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git checkout -b sing_ruleset
+          git checkout -b singbox
           git add *.srs
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"

@@ -69,10 +69,10 @@ impl Singbox {
 
         unsafe {
             let err = compileRuleset(
-                data.as_ptr(),
+                data.as_ptr() as *const c_char,
                 data.len() as i32,
                 3,
-                output_path.as_ptr(),
+                output_path.as_ptr() as *const c_char,
                 output_path.len() as i32,
             );
             if !err.is_null() {
