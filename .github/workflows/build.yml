@@ -27,12 +27,12 @@ jobs:
           sudo apt update && sudo apt install -y protobuf-compiler
 
       - name: Install rust toolchains
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.89.0
 
       - name: Install golang
         uses: actions/setup-go@v4
         with:
-          go-version-file: geosite_converter/libs/go.mod
+          go-version-file: converter/go/go.mod
       
       - name: Fetch dlc.dat from v2fly/domain-list-community
         run: curl -L -o dlc.dat 'https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat'
@@ -40,10 +40,7 @@ jobs:
       - name: Download ruleset
         run: |
           mkdir -p resources
-          curl -L -o 'resources/cn.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax.list'
-          curl -L -o 'resources/ad.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list'
-          curl -L -o 'resources/hoyoverse.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/HoYoverse/HoYoverse.list'
-          curl -L -o 'resources/google.list' 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list'
+          curl -L -o 'resources/cn.list' 'https://github.com/Loyalsoldier/surge-rules/blob/release/ruleset/direct.txt'
       
       - name: Add extra domains
         run: |
@@ -52,23 +49,35 @@ jobs:
         env:
           extra_domains_list: ${{ secrets.EXTRA_DOMAINS_LIST }}
       - name: Start conversion
-        run: cargo run
+        run: cargo run -- -f dlc.dat -t resources -o ruleset
       
-      - name: Release clash ruleset
+      - name: Release clash domain ruleset
         run: |
           cd ruleset/domain
           git init 
           git config --local user.name github-actions[bot]
           git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git checkout -b ruleset
+          git checkout -b domain
           git add *.list
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin ruleset
+          git push -f -u origin domain
+      
+      - name: Release clash classical ruleset
+        run: |
+          cd ruleset/classical
+          git init 
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b classical
+          git add *.list
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin classical
       
       - name: Release sing-box ruleset
         run: |
-          cd sing-box_ruleset
+          cd ruleset/singbox
           git init 
           git config --local user.name github-actions[bot]
           git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -76,11 +85,17 @@ jobs:
           git add *.srs
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin sing_ruleset
+          git push -f -u origin singbox
         
-      - name: Release sing-box geosite.db
+      - name: Release geosite.dat
         run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.db ./geosite.dat
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geosite.dat
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean old releases
+        run: |
+          git tag | awk -v latest=${{ env.TAG_NAME }} '{if ($1!=latest) system("gh release delete -y --cleanup-tag $1")}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
