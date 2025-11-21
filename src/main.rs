@@ -1,5 +1,6 @@
 use clap::{crate_version, Arg, Command};
-use converter::Singbox;
+use converter::mihomo::Mihomo;
+use converter::singbox::Singbox;
 use fancy_regex::Regex;
 use log::info;
 use proto_parser::proto_parser::common::domain::{Attribute, Type};
@@ -49,7 +50,6 @@ fn main() -> Result<(), std::io::Error> {
                 .help("Set the output directory."),
         )
         .get_matches();
-
     let mut geosite = File::open(matches.get_one::<String>("file").unwrap())?;
     let out_dir =
         std::path::PathBuf::from_str(matches.get_one::<String>("output").unwrap()).unwrap();
@@ -129,30 +129,39 @@ fn main() -> Result<(), std::io::Error> {
     }
 
     // Remove files in the output directory
-    [None, Some("classical"), Some("domain"), Some("singbox")]
-        .iter()
-        .for_each(|dir| {
-            let mut out_dir = out_dir.clone();
-            if let Some(dir) = dir {
-                out_dir = out_dir.join(dir).clone();
-            }
-            if out_dir.is_dir() {
-                remove_dir_all(&out_dir).unwrap();
-            }
-            std::fs::create_dir(out_dir).unwrap();
-        });
+    [
+        None,
+        Some("classical"),
+        Some("domain"),
+        Some("singbox"),
+        Some("mrs"),
+    ]
+    .iter()
+    .for_each(|dir| {
+        let mut out_dir = out_dir.clone();
+        if let Some(dir) = dir {
+            out_dir = out_dir.join(dir).clone();
+        }
+        if out_dir.is_dir() {
+            remove_dir_all(&out_dir).unwrap();
+        }
+        std::fs::create_dir(out_dir).unwrap();
+    });
     let classical_rules_dir = out_dir.join("classical");
     let domain_rules_dir = out_dir.join("domain");
     let singbox_rules_dir = out_dir.join("singbox");
+    let mrs_rules_dir = out_dir.join("mrs");
 
     sites.entry.par_iter().for_each(|i| {
         info!("Handle {}", i.country_code.to_lowercase());
         let file_name = format!("{}.list", i.country_code.to_lowercase());
         let singbox_name = format!("{}.srs", i.country_code.to_lowercase());
+        let mihomo_name = format!("{}.mrs", i.country_code.to_lowercase());
         let mut classical_file = BufWriter::new(
             OpenOptions::new()
                 .create(true)
                 .write(true)
+                .read(true)
                 .open(&classical_rules_dir.join(file_name.as_str()))
                 .unwrap(),
         );
@@ -164,6 +173,7 @@ fn main() -> Result<(), std::io::Error> {
                 .unwrap(),
         );
         let mut singbox = Singbox::new();
+        let mihomo = Mihomo::new();
 
         for sites in i.domain.iter() {
             let mut enable_domain = true;
@@ -202,6 +212,12 @@ fn main() -> Result<(), std::io::Error> {
         }
         singbox
             .compile(singbox_rules_dir.join(&singbox_name).to_str().unwrap())
+            .unwrap();
+        mihomo
+            .compile(
+                classical_file.buffer(),
+                mrs_rules_dir.join(&mihomo_name).to_str().unwrap(),
+            )
             .unwrap();
         classical_file.flush().unwrap();
         domain_file.flush().unwrap();
