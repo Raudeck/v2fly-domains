@@ -24,6 +24,7 @@ Based on [v2fly/domain-list-community](https://github.com/v2fly/domain-list-comm
             cn:
                 type: http
                 behavior: domain
+                format: text
                 url: "https://raw.githubusercontent.com/Raudeck/v2fly-domains/refs/heads/domain/cn.list"
                 path: ./ruleset/cn.list
                 interval: 86400
@@ -34,7 +35,19 @@ Based on [v2fly/domain-list-community](https://github.com/v2fly/domain-list-comm
             cn:
                 type: http
                 behavior: classical
+                format: text
                 url: "https://raw.githubusercontent.com/Raudeck/v2fly-domains/refs/heads/classical/cn.list"
                 path: ./ruleset/cn.list
                 interval: 86400
+        ```
+    * Example (mrs):
+        ```
+        rule-providers:
+            cn:
+                type: http
+                path: ./ruleset/cn.mrs
+                url: "https://raw.githubusercontent.com/Raudeck/v2fly-domains/refs/heads/mrs/cn.mrs"
+                behavior: domain
+                format: mrs
+                interval: 89640
         ```
